@@ -1,19 +1,9 @@
-import {
-  Box,
-  HStack,
-  IconButton,
-  Image,
-  Input,
-  Spacer,
-} from "@chakra-ui/react";
-import { useTheme } from "next-themes";
-import { FiMoon, FiSearch, FiSun } from "react-icons/fi";
-import logo from "../../assets/logo.webp";
+import { Box, HStack, Image, Input, Spacer } from "@chakra-ui/react";
+import { FiSearch } from "react-icons/fi";
+import logo from "../assets/logo.webp";
+import ColorModeSwitch from "@/components/ColorModeSwitch";
 
 const NavBar = () => {
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   return (
     <HStack as="header" paddingX={4} paddingY={3} gap={4} width="100%">
       <Image src={logo} alt="Game Hub" boxSize="60px" objectFit="contain" />
@@ -38,13 +28,7 @@ const NavBar = () => {
 
       <Spacer />
 
-      <IconButton
-        aria-label="Toggle color mode"
-        variant="ghost"
-        onClick={() => setTheme(isDark ? "light" : "dark")}
-      >
-        <Box as={isDark ? FiSun : FiMoon} />
-      </IconButton>
+      <ColorModeSwitch />
     </HStack>
   );
 };
