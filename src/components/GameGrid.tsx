@@ -1,45 +1,8 @@
 import { Box, Grid, Image, Spinner, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import apiClient from "@/services/api-client";
-
-interface Game {
-  id: number;
-  name: string;
-  background_image: string | null;
-}
-
-interface FetchResponse<T> {
-  count: number;
-  results: T[];
-}
+import useGames from "@/components/hooks/useGames";
 
 const GameGrid = () => {
-  const [games, setGames] = useState<Game[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient
-      .get<FetchResponse<Game>>("/xgames")
-      .then((res) => {
-        if (cancelled) return;
-        setGames(res.data.results);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err.message);
-      })
-      .finally(() => {
-        if (cancelled) return;
-        setIsLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { games, isLoading, error } = useGames();
 
   return (
     <>
