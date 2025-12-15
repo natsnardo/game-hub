@@ -3,15 +3,19 @@ import useGames from "@/components/hooks/useGames";
 import GameCard from "@/components/GameCard";
 import GameCardSkeleton from "@/components/GameCardSkeleton";
 
-const GameGrid = () => {
-  const { games, isLoading, error } = useGames();
+interface Props {
+  genreId?: number;
+}
+
+const GameGrid = ({ genreId }: Props) => {
+  const { games, isLoading, error } = useGames(genreId);
 
   return (
     <>
       {error && <Text color="red.500">{error}</Text>}
       {isLoading && (
         <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3, xl: 5 }}
+          columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
           gap={6}
           padding={4}
         >
@@ -23,7 +27,7 @@ const GameGrid = () => {
 
       {!isLoading && !error && (
         <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3, xl: 5 }}
+          columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
           gap={6}
           padding={4}
         >
