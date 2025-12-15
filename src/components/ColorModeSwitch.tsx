@@ -24,7 +24,9 @@ const ColorModeSwitch = () => {
             </Switch.ThumbIndicator>
           </Switch.Thumb>
         </Switch.Control>
-        <Switch.Label>{label}</Switch.Label>
+        <Switch.Label display={{ base: "none", md: "block" }}>
+          {label}
+        </Switch.Label>
       </Switch.Root>
     </HStack>
   );

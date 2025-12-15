@@ -14,13 +14,14 @@ function App() {
         base: `"nav" "main"`,
         lg: `"nav nav" "aside main"`, // 1024px
       }}
-      templateColumns={{ base: "1fr", lg: "200px 1fr" }}
+      templateColumns={{ base: "1fr", lg: "280px 1fr" }}
+      columnGap={{ base: 0, lg: 6 }}
     >
       <GridItem area="nav">
         <NavBar />
       </GridItem>
 
-      <GridItem area="aside" hideBelow="lg">
+      <GridItem area="aside" hideBelow="lg" padding={5}>
         <GenreList
           selectedGenre={selectedGenre}
           onSelectGenre={(genre) => setSelectedGenre(genre)}

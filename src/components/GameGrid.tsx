@@ -15,7 +15,7 @@ const GameGrid = ({ genreId }: Props) => {
       {error && <Text color="red.500">{error}</Text>}
       {isLoading && (
         <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+          columns={{ base: 1, md: 2, lg: 3, xl: 4, "2xl": 5 }}
           gap={6}
           padding={4}
         >
