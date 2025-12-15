@@ -28,7 +28,7 @@ const PlatformIconList = ({ platforms }: Props) => {
   };
 
   return (
-    <HStack marginTop={2} gap={2} wrap="wrap">
+    <HStack gap={2} wrap="wrap">
       {platforms?.map((platform) => {
         const IconComponent = platformIconMap[platform.slug];
         if (!IconComponent) return null;
