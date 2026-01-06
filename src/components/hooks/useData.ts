@@ -9,6 +9,12 @@ interface FetchResponse<T> {
 
 type RequestParams = Record<string, string | number | boolean | undefined>;
 
+interface PaginationInfo {
+  count: number;
+  next: string | null;
+  previous: string | null;
+}
+
 const useData = <T>(
   endpoint: string,
   params?: RequestParams,
@@ -17,6 +23,7 @@ const useData = <T>(
   const [data, setData] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
 
   const paramsKey = JSON.stringify(params ?? {});
 
@@ -31,6 +38,11 @@ const useData = <T>(
       })
       .then((res) => {
         setData(res.data.results);
+        setPagination({
+          count: res.data.count,
+          next: null,
+          previous: null,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
@@ -44,7 +56,7 @@ const useData = <T>(
     return () => controller.abort();
   }, [endpoint, paramsKey, depsKey]);
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, pagination };
 };
 
 export default useData;
