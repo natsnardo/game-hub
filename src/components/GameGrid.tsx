@@ -1,9 +1,8 @@
-import { Center, SimpleGrid, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { Center, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import useGames from "@/components/hooks/useGames";
 import GameCard from "@/components/GameCard";
 import GameCardSkeleton from "@/components/GameCardSkeleton";
-import GamePagination from "@/components/GamePagination";
 
 interface Props {
   genreId?: number;
@@ -13,72 +12,63 @@ interface Props {
 }
 
 const GameGrid = ({ genreId, platformId, sortOrder, searchText }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 20; // Fixed page size
-
-  const { games, isLoading, error, pagination } = useGames({
+  const { games, isLoading, error, fetchNextPage, hasNextPage } = useGames({
     genreId,
     platformId,
     sortOrder,
     searchText,
-    page: currentPage,
-    pageSize,
   });
-
-  const totalPages = pagination ? Math.ceil(pagination.count / pageSize) : 1;
-  const totalItems = pagination?.count || 0;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   if (error) return <Text color="red.500">{error}</Text>;
 
+  if (isLoading) {
+    return (
+      <SimpleGrid
+        columns={{ base: 1, md: 2, lg: 3, xl: 4, "2xl": 5 }}
+        gap={6}
+        padding={4}
+      >
+        {Array.from({ length: 20 }).map((_, index) => (
+          <GameCardSkeleton key={index} />
+        ))}
+      </SimpleGrid>
+    );
+  }
+
+  if (games.length === 0) {
+    return (
+      <Center minHeight="50vh" padding={4}>
+        <Text color="fg.muted">No results found.</Text>
+      </Center>
+    );
+  }
+
   return (
-    <>
-      {isLoading && (
-        <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3, xl: 4, "2xl": 5 }}
-          gap={6}
-          padding={4}
-        >
-          {Array.from({ length: pageSize }).map((_, index) => (
-            <GameCardSkeleton key={index} />
-          ))}
-        </SimpleGrid>
-      )}
-
-      {!isLoading && !error && (
-        <>
-          {games.length === 0 ? (
-            <Center minHeight="50vh" padding={4}>
-              <Text color="fg.muted">No results found.</Text>
-            </Center>
-          ) : (
-            <>
-              <SimpleGrid
-                columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
-                gap={6}
-                padding={4}
-              >
-                {games.map((game) => (
-                  <GameCard key={game.id} game={game} />
-                ))}
-              </SimpleGrid>
-
-              <GamePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={pageSize}
-                onPageChange={handlePageChange}
-                isLoading={isLoading}
-              />
-            </>
-          )}
-        </>
-      )}
-    </>
+    <InfiniteScroll
+      dataLength={games.length}
+      next={fetchNextPage}
+      hasMore={!!hasNextPage}
+      loader={
+        <Center padding={4}>
+          <Spinner size="lg" />
+        </Center>
+      }
+      endMessage={
+        <Center padding={4}>
+          <Text color="fg.muted">No more games to load</Text>
+        </Center>
+      }
+    >
+      <SimpleGrid
+        columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+        gap={6}
+        padding={4}
+      >
+        {games.map((game) => (
+          <GameCard key={game.id} game={game} />
+        ))}
+      </SimpleGrid>
+    </InfiniteScroll>
   );
 };
 
